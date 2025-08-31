@@ -14,6 +14,7 @@ import 'package:my_portfolio/features/skills/presentation/skills_section.dart';
 import 'package:my_portfolio/features/about/presentation/about_experience_section.dart';
 import 'package:my_portfolio/features/contact/presentation/contact_section.dart';
 import 'package:my_portfolio/features/profile/presentation/side_sheet.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PortfolioHome extends StatefulWidget {
   const PortfolioHome({super.key});
@@ -68,13 +69,32 @@ class _PortfolioHomeState extends State<PortfolioHome> {
     }
   }
 
+  // Helper لفتح الروابط مع SnackBar لو فشل
+  Future<void> _launchExternal(BuildContext context, String url) async {
+    final uri = Uri.parse(url);
+    final ok = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+    if (!ok && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not open: $url')),
+      );
+    }
+  }
+
   void _openProfilePanel() {
     showProfileSideSheet(
       context,
-      onEmail: () {},
-      onCall: () {},
-      onGitHub: () {},
-      onLinkedIn: () {},
+      onEmail: () =>
+          _launchExternal(context, 'mailto:mahmoudahmed8692@gmail.com'),
+      onCall: () => _launchExternal(context, 'tel:+201286927788'),
+      onGitHub: () =>
+          _launchExternal(context, 'https://github.com/MahmoudASoliman'),
+      onLinkedIn: () => _launchExternal(
+        context,
+        'https://www.linkedin.com/in/mahmoud-a-soliman/',
+      ),
     );
   }
 

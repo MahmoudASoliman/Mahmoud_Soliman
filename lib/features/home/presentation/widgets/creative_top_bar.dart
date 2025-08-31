@@ -25,11 +25,20 @@ class CreativeTopBar extends StatefulWidget {
   State<CreativeTopBar> createState() => _CreativeTopBarState();
 }
 
-class _CreativeTopBarState extends State<CreativeTopBar> with SingleTickerProviderStateMixin {
-  late final AnimationController _shine = AnimationController(vsync: this, duration: const Duration(seconds: 3))..repeat();
+class _CreativeTopBarState extends State<CreativeTopBar>
+    with SingleTickerProviderStateMixin {
+  bool _hoverName = false;
+  late final AnimationController _shine = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 3),
+  )..repeat();
 
-  final _wa = Uri.parse('https://wa.me/201286927788?text=Hi%20Mahmoud%2C%20I%20saw%20your%20portfolio');
-  final _cv = Uri.parse('https://drive.google.com/file/d/1EqP_d66jT4NR2jP3KEYCA03cOL7MIkpb/view?usp=drive_link');
+  final _wa = Uri.parse(
+    'https://wa.me/201286927788?text=Hi%20Mahmoud%2C%20I%20saw%20your%20portfolio',
+  );
+  final _cv = Uri.parse(
+    'https://drive.google.com/file/d/1EqP_d66jT4NR2jP3KEYCA03cOL7MIkpb/view?usp=drive_link',
+  );
 
   @override
   void dispose() {
@@ -49,17 +58,30 @@ class _CreativeTopBarState extends State<CreativeTopBar> with SingleTickerProvid
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: compact ? 8 : 12, vertical: compact ? 6 : 8),
+          padding: EdgeInsets.symmetric(
+            horizontal: compact ? 8 : 12,
+            vertical: compact ? 6 : 8,
+          ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(28),
             gradient: LinearGradient(
-              colors: [cs.surface.withValues(alpha: .50), cs.surface.withValues(alpha: .22)],
+              colors: [
+                cs.surface.withValues(alpha: .50),
+                cs.surface.withValues(alpha: .22),
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            border: Border.all(color: cs.outlineVariant.withValues(alpha: .6), width: 0.7),
+            border: Border.all(
+              color: cs.outlineVariant.withValues(alpha: .6),
+              width: 0.7,
+            ),
             boxShadow: [
-              BoxShadow(color: cs.primary.withValues(alpha: .18), blurRadius: 24, spreadRadius: 1),
+              BoxShadow(
+                color: cs.primary.withValues(alpha: .18),
+                blurRadius: 24,
+                spreadRadius: 1,
+              ),
             ],
           ),
           child: Row(
@@ -70,18 +92,41 @@ class _CreativeTopBarState extends State<CreativeTopBar> with SingleTickerProvid
                   borderRadius: BorderRadius.circular(16),
                   gradient: LinearGradient(colors: [cs.primary, cs.tertiary]),
                 ),
-                child: const Icon(Icons.flutter_dash_rounded, color: Colors.white, size: 18),
+                child: const Icon(
+                  Icons.flutter_dash_rounded,
+                  color: Colors.white,
+                  size: 18,
+                ),
               ),
               const SizedBox(width: 8),
+
               if (!ultraCompact)
-                const Expanded(
-                  child: Text(
-                    'Mahmoud Ahmed',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontWeight: FontWeight.w800),
+                Expanded(
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    onEnter: (_) => setState(() => _hoverName = true),
+                    onExit: (_) => setState(() => _hoverName = false),
+                    child: GestureDetector(
+                      onTap: widget.onProfile,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Text(
+                          'Mahmoud Ahmed',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            color: _hoverName ? cs.primary : cs.onSurface,
+                            decoration: _hoverName
+                                ? TextDecoration.underline
+                                : TextDecoration.none,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
+
               if (widget.showInlineNav) ...[
                 _NavChip(label: 'Home', onTap: () => widget.onNavigate(0)),
                 _NavChip(label: 'Projects', onTap: () => widget.onNavigate(2)),
@@ -90,23 +135,57 @@ class _CreativeTopBarState extends State<CreativeTopBar> with SingleTickerProvid
                 _NavChip(label: 'Contact', onTap: () => widget.onNavigate(4)),
                 const SizedBox(width: 6),
               ] else ...[
-                IconButton(tooltip: 'Menu', onPressed: widget.onMenu, icon: const Icon(Icons.menu_rounded)),
+                IconButton(
+                  tooltip: 'Menu',
+                  onPressed: widget.onMenu,
+                  icon: const Icon(Icons.menu_rounded),
+                ),
               ],
               if (!compact) ...[
-                ContactPill(label: 'Whatsapp', icon: FontAwesomeIcons.whatsapp, url: _wa.toString(), height: 38),
+                ContactPill(
+                  label: 'Whatsapp',
+                  icon: FontAwesomeIcons.whatsapp,
+                  url: _wa.toString(),
+                  height: 38,
+                ),
                 const SizedBox(width: 8),
-                ContactPill(label: 'View CV', icon: FontAwesomeIcons.filePdf, url: _cv.toString(), height: 38),
+                ContactPill(
+                  label: 'View CV',
+                  icon: FontAwesomeIcons.filePdf,
+                  url: _cv.toString(),
+                  height: 38,
+                ),
                 const SizedBox(width: 6),
               ] else ...[
-                ContactPill.iconOnly(icon: FontAwesomeIcons.whatsapp, url: _wa.toString(), diameter: 36, tooltip: 'Whatsapp'),
+                ContactPill.iconOnly(
+                  icon: FontAwesomeIcons.whatsapp,
+                  url: _wa.toString(),
+                  diameter: 36,
+                  tooltip: 'Whatsapp',
+                ),
                 const SizedBox(width: 6),
-                ContactPill.iconOnly(icon: FontAwesomeIcons.filePdf, url: _cv.toString(), diameter: 36, tooltip: 'View CV'),
+                ContactPill.iconOnly(
+                  icon: FontAwesomeIcons.filePdf,
+                  url: _cv.toString(),
+                  diameter: 36,
+                  tooltip: 'View CV',
+                ),
                 const SizedBox(width: 4),
               ],
-              IconButton(tooltip: 'Profile', onPressed: widget.onProfile, icon: const Icon(Icons.person_rounded)),
+              IconButton(
+                tooltip: 'Profile',
+                onPressed: widget.onProfile,
+                icon: const Icon(Icons.person_rounded),
+              ),
               compact
-                  ? _ThemeIconButton(isDark: widget.themeMode == ThemeMode.dark, onToggle: widget.onToggleTheme)
-                  : _ThemeSegment(isDark: widget.themeMode == ThemeMode.dark, onToggle: widget.onToggleTheme),
+                  ? _ThemeIconButton(
+                      isDark: widget.themeMode == ThemeMode.dark,
+                      onToggle: widget.onToggleTheme,
+                    )
+                  : _ThemeSegment(
+                      isDark: widget.themeMode == ThemeMode.dark,
+                      onToggle: widget.onToggleTheme,
+                    ),
             ],
           ),
         ),
@@ -123,7 +202,12 @@ class _CreativeTopBarState extends State<CreativeTopBar> with SingleTickerProvid
               animation: _shine,
               builder: (_, __) {
                 final t = _shine.value;
-                return CustomPaint(painter: ShinePainter(color: cs.primary.withValues(alpha: .12), t: t));
+                return CustomPaint(
+                  painter: ShinePainter(
+                    color: cs.primary.withValues(alpha: .12),
+                    t: t,
+                  ),
+                );
               },
             ),
           ),
@@ -157,7 +241,9 @@ class _NavChip extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2),
       child: TextButton(
-        style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 12)),
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+        ),
         onPressed: onTap,
         child: Text(label),
       ),
@@ -183,7 +269,10 @@ class _ThemeSegment extends StatelessWidget {
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(999),
-          border: Border.all(color: cs.outlineVariant.withValues(alpha: .6), width: .8),
+          border: Border.all(
+            color: cs.outlineVariant.withValues(alpha: .6),
+            width: .8,
+          ),
           color: cs.surface.withValues(alpha: .28),
         ),
         child: AnimatedAlign(
@@ -203,7 +292,11 @@ class _ThemeSegment extends StatelessWidget {
                 ],
               ),
             ),
-            child: Icon(isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded, size: 18, color: Colors.white),
+            child: Icon(
+              isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+              size: 18,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
@@ -221,15 +314,23 @@ class ShinePainter extends CustomPainter {
       ..shader = LinearGradient(
         begin: Alignment(-1 + 2 * t, -1),
         end: Alignment(0 + 2 * t, 1),
-        colors: [color.withValues(alpha: 0.0), color, color.withValues(alpha: 0.0)],
+        colors: [
+          color.withValues(alpha: 0.0),
+          color,
+          color.withValues(alpha: 0.0),
+        ],
       ).createShader(Offset.zero & size);
-    final r = RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(28));
+    final r = RRect.fromRectAndRadius(
+      Offset.zero & size,
+      const Radius.circular(28),
+    );
     canvas.clipRRect(r);
     canvas.drawRect(Offset.zero & size, paint);
   }
 
   @override
-  bool shouldRepaint(covariant ShinePainter old) => old.t != t || old.color != color;
+  bool shouldRepaint(covariant ShinePainter old) =>
+      old.t != t || old.color != color;
 }
 
 /// -------------- ContactPill (shared button) --------------
@@ -240,9 +341,9 @@ class ContactPill extends StatefulWidget {
     required this.icon,
     required this.url,
     this.height = 44,
-  })  : _iconOnly = false,
-        diameter = 0,
-        tooltip = null;
+  }) : _iconOnly = false,
+       diameter = 0,
+       tooltip = null;
 
   const ContactPill.iconOnly({
     super.key,
@@ -250,9 +351,9 @@ class ContactPill extends StatefulWidget {
     required this.url,
     this.diameter = 40,
     this.tooltip,
-  })  : label = '',
-        height = 0,
-        _iconOnly = true;
+  }) : label = '',
+       height = 0,
+       _iconOnly = true;
 
   final String label;
   final IconData icon;
@@ -268,9 +369,16 @@ class ContactPill extends StatefulWidget {
   State<ContactPill> createState() => _ContactPillState();
 }
 
-class _ContactPillState extends State<ContactPill> with TickerProviderStateMixin {
-  late final AnimationController _loop = AnimationController(vsync: this, duration: const Duration(seconds: 5))..repeat();
-  late final AnimationController _press = AnimationController(vsync: this, duration: const Duration(milliseconds: 140));
+class _ContactPillState extends State<ContactPill>
+    with TickerProviderStateMixin {
+  late final AnimationController _loop = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 5),
+  )..repeat();
+  late final AnimationController _press = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 140),
+  );
 
   double _tiltX = 0, _tiltY = 0;
 
@@ -318,14 +426,30 @@ class _ContactPillState extends State<ContactPill> with TickerProviderStateMixin
             ..scale(scale),
           child: Container(
             height: widget._iconOnly ? widget.diameter : widget.height,
-            constraints: widget._iconOnly ? BoxConstraints.tight(Size.square(widget.diameter)) : const BoxConstraints(minWidth: 110),
-            padding: widget._iconOnly ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+            constraints: widget._iconOnly
+                ? BoxConstraints.tight(Size.square(widget.diameter))
+                : const BoxConstraints(minWidth: 110),
+            padding: widget._iconOnly
+                ? EdgeInsets.zero
+                : const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(999),
-              gradient: LinearGradient(colors: [c1, c2, c3], begin: Alignment.topLeft, end: Alignment.bottomRight),
+              gradient: LinearGradient(
+                colors: [c1, c2, c3],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
               boxShadow: [
-                BoxShadow(color: cs.primary.withValues(alpha: glow), blurRadius: 24, spreadRadius: 1),
-                BoxShadow(color: cs.tertiary.withValues(alpha: glow * .8), blurRadius: 18, spreadRadius: 1),
+                BoxShadow(
+                  color: cs.primary.withValues(alpha: glow),
+                  blurRadius: 24,
+                  spreadRadius: 1,
+                ),
+                BoxShadow(
+                  color: cs.tertiary.withValues(alpha: glow * .8),
+                  blurRadius: 18,
+                  spreadRadius: 1,
+                ),
               ],
               border: Border.all(color: Colors.white.withValues(alpha: .18)),
             ),
@@ -335,25 +459,35 @@ class _ContactPillState extends State<ContactPill> with TickerProviderStateMixin
                 Positioned.fill(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(999),
-                    child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8), child: const SizedBox.expand()),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                      child: const SizedBox.expand(),
+                    ),
                   ),
                 ),
                 if (widget._iconOnly)
-                  Center(child: FaIcon(widget.icon, color: Colors.white, size: 18))
+                  Center(
+                    child: FaIcon(widget.icon, color: Colors.white, size: 18),
+                  )
                 else
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       FaIcon(widget.icon, color: Colors.white, size: 18),
                       const SizedBox(width: 8),
-                      const Text('',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w800,
-                          )),
+                      const Text(
+                        '',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
                       Text(
                         widget.label,
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     ],
                   ),
@@ -389,6 +523,8 @@ class _ContactPillState extends State<ContactPill> with TickerProviderStateMixin
       ),
     );
 
-    return widget.tooltip == null ? gesture : Tooltip(message: widget.tooltip!, child: gesture);
+    return widget.tooltip == null
+        ? gesture
+        : Tooltip(message: widget.tooltip!, child: gesture);
   }
 }
