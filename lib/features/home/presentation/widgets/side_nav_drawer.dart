@@ -6,12 +6,14 @@ class SideNavDrawer extends StatelessWidget {
     required this.selectedIndex,
     required this.onSelect,
   });
+
   final int selectedIndex;
   final ValueChanged<int> onSelect;
 
   @override
   Widget build(BuildContext context) {
     final items = const ['Home', 'Skills', 'Projects', 'About', 'Contact'];
+
     return Drawer(
       child: SafeArea(
         child: ListView.separated(
@@ -21,7 +23,7 @@ class SideNavDrawer extends StatelessWidget {
             return ListTile(
               selected: selectedIndex == i,
               title: Text(items[i]),
-              onTap: () => onSelect(i == 0 ? 0 : (i == 2 ? 2 : i)),
+              onTap: () => onSelect(i), // نبعت الاندكس مباشرة
             );
           },
         ),

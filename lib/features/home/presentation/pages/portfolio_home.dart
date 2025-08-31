@@ -99,7 +99,10 @@ class _PortfolioHomeState extends State<PortfolioHome> {
               onSelect: (i) {
                 setState(() => _drawerSelection = i);
                 Navigator.pop(context);
-                _navigateTo(i);
+                // نضمن إن السكروول يحصل بعد قفل الدروار
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _navigateTo(i);
+                });
               },
             ),
       body: Stack(
@@ -123,46 +126,66 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                           final horizontal = AppBreakpoints.isSmall(width)
                               ? 16.0
                               : AppBreakpoints.isMedium(width)
-                                  ? 24.0
-                                  : 32.0;
-                          final vSpacing =
-                              AppBreakpoints.isSmall(width) ? 16.0 : 24.0;
+                              ? 24.0
+                              : 32.0;
+                          final vSpacing = AppBreakpoints.isSmall(width)
+                              ? 16.0
+                              : 24.0;
 
                           return Padding(
-                            padding: EdgeInsets.symmetric(horizontal: horizontal),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: horizontal,
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
+                                // Home / Hero
                                 SectionContainer(
                                   key: _heroKey,
                                   child: HeroSection(
                                     onContactTap: () => _scrollTo(_contactKey),
-                                    onProjectsTap: () => _scrollTo(_projectsKey),
+                                    onProjectsTap: () =>
+                                        _scrollTo(_projectsKey),
                                   ),
                                 ),
                                 SizedBox(height: vSpacing),
-                                const SectionContainer(
-                                  key: Key('projects-section'),
-                                  child: ProjectsSection(),
+
+                                // Projects
+                                SectionContainer(
+                                  key: _projectsKey,
+                                  child: const ProjectsSection(),
                                 ),
                                 SizedBox(height: vSpacing),
-                                const SectionContainer(
-                                  child: SkillsSection(),
+
+                                // Skills
+                                SectionContainer(
+                                  key: _skillsKey,
+                                  child: const SkillsSection(),
                                 ),
                                 SizedBox(height: vSpacing),
-                                const SectionContainer(
-                                  child: AboutExperienceSection(),
+
+                                // About
+                                SectionContainer(
+                                  key: _aboutKey,
+                                  child: const AboutExperienceSection(),
                                 ),
                                 SizedBox(height: vSpacing),
-                                const SectionContainer(
-                                  child: ContactSection(),
+
+                                // Contact
+                                SectionContainer(
+                                  key: _contactKey,
+                                  child: const ContactSection(),
                                 ),
                                 SizedBox(height: vSpacing + 8),
+
                                 Center(
                                   child: Text(
                                     '© ${DateTime.now().year} Mahmoud Ahmed. All rights reserved.',
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: cs.onSurface.withValues(alpha: 0.7),
+                                    style: Theme.of(context).textTheme.bodySmall
+                                        ?.copyWith(
+                                          color: cs.onSurface.withValues(
+                                            alpha: 0.7,
+                                          ),
                                         ),
                                   ),
                                 ),
@@ -177,6 +200,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
               ),
             ),
           ),
+
           // Top Bar
           Positioned(
             top: 0,
