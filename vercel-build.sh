@@ -11,3 +11,4 @@ flutter pub get
 
 # إبني نسخة الويب
 flutter build web --release
+chmod +x vercel-build.sh
